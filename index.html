@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173c5b">
+<title>Front Office - Hotel Buddi Samudra</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page-bg: #edf4fb;
+    --surface: rgba(255,255,255,.94);
+    --surface-solid: #ffffff;
+    --text: #152b40;
+    --muted: #5f7285;
+    --border: rgba(23,60,91,.14);
+    --accent: #1769aa;
+    --accent-strong: #104d7e;
+    --accent-soft: #dceeff;
+    --button-bg: #ffffff;
+    --button-text: #18364e;
+    --button-hover: #e7f3ff;
+    --green: #19a76b;
+    --shadow: 0 14px 38px rgba(19,48,75,.12);
+    --header-shadow: 0 8px 28px rgba(15,38,60,.12);
+    --radius: 20px;
+    --header-radius: 0px;
+    --header-gap: 0px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    color: var(--text);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background:
+      radial-gradient(ellipse at 10% 0%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 42rem),
+      linear-gradient(150deg, var(--page-bg), color-mix(in srgb, var(--page-bg) 65%, var(--accent-soft)) 70%, var(--page-bg));
+    transition: background-color .3s ease, color .3s ease;
+  }
+  body[data-appearance="blue"] {
+    --page-bg:#edf4fb; --surface:rgba(255,255,255,.94); --surface-solid:#fff; --text:#152b40; --muted:#5f7285;
+    --border:rgba(23,60,91,.14); --accent:#1769aa; --accent-strong:#104d7e; --accent-soft:#dceeff;
+    --button-bg:#fff; --button-text:#18364e; --button-hover:#e7f3ff; --shadow:0 14px 38px rgba(19,48,75,.12);
+  }
+  body[data-appearance="red"] {
+    --page-bg:#fff1f1; --surface:rgba(255,255,255,.95); --surface-solid:#fff; --text:#421c23; --muted:#81565c;
+    --border:rgba(153,36,55,.16); --accent:#c43b4d; --accent-strong:#8d2636; --accent-soft:#ffe0e3;
+    --button-bg:#fff; --button-text:#4b2028; --button-hover:#ffe8eb; --shadow:0 14px 38px rgba(100,25,35,.11);
+  }
+  body[data-appearance="green"] {
+    --page-bg:#eef8f1; --surface:rgba(255,255,255,.95); --surface-solid:#fff; --text:#173b2a; --muted:#5b7866;
+    --border:rgba(26,112,68,.16); --accent:#258653; --accent-strong:#17633b; --accent-soft:#d8f1e1;
+    --button-bg:#fff; --button-text:#1b4930; --button-hover:#e2f6e9; --shadow:0 14px 38px rgba(21,83,48,.11);
+  }
+  body[data-appearance="yellow"] {
+    --page-bg:#fff9e7; --surface:rgba(255,255,255,.96); --surface-solid:#fff; --text:#453512; --muted:#827044;
+    --border:rgba(159,116,18,.18); --accent:#b78312; --accent-strong:#805b09; --accent-soft:#fff0bf;
+    --button-bg:#fff; --button-text:#4b3914; --button-hover:#fff4cf; --shadow:0 14px 38px rgba(112,82,12,.12);
+  }
+  body[data-appearance="purple"] {
+    --page-bg:#f5f0ff; --surface:rgba(255,255,255,.95); --surface-solid:#fff; --text:#302044; --muted:#766487;
+    --border:rgba(100,57,150,.17); --accent:#7650b5; --accent-strong:#53338b; --accent-soft:#e9ddff;
+    --button-bg:#fff; --button-text:#382450; --button-hover:#f0e8ff; --shadow:0 14px 38px rgba(64,38,99,.12);
+  }
+  body[data-mode="dark"] {
+    color-scheme: dark;
+    --page-bg:#10151d; --surface:rgba(28,35,46,.96); --surface-solid:#1c232e; --text:#eef3fa; --muted:#a5b2c2;
+    --border:rgba(219,231,245,.13); --accent:#8cbcff; --accent-strong:#c0d9ff; --accent-soft:#2b3c52;
+    --button-bg:#202a37; --button-text:#edf4fc; --button-hover:#2b3b4e; --green:#45d69a;
+    --shadow:0 16px 42px rgba(0,0,0,.28); --header-shadow:0 10px 32px rgba(0,0,0,.35);
+  }
+  button, input, select { font: inherit; }
+  button { cursor: pointer; }
+  .top-shell {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    padding: 0;
+    transition: padding .35s cubic-bezier(.2,.75,.25,1);
+  }
+  .top-shell.scrolled { padding: 10px 16px 0; }
+  .topbar {
+    width: 100%;
+    min-height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 14px clamp(16px, 4vw, 48px);
+    background: var(--surface);
+    border: 1px solid transparent;
+    border-radius: var(--header-radius);
+    box-shadow: none;
+    backdrop-filter: blur(18px);
+    transition: border-radius .35s cubic-bezier(.2,.75,.25,1), box-shadow .35s ease,
+      padding .35s ease, min-height .35s ease, background .3s ease, border-color .3s ease;
+  }
+  .scrolled .topbar {
+    min-height: 66px;
+    padding: 10px clamp(16px, 3vw, 32px);
+    border-radius: 22px;
+    border-color: var(--border);
+    box-shadow: var(--header-shadow);
+  }
+  .brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .brand-mark {
+    width: 42px; height: 42px; flex: 0 0 42px;
+    display: grid; place-items: center;
+    border-radius: 14px;
+    color: white;
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 25%, transparent);
+    font-weight: 850; letter-spacing: -.06em;
+  }
+  .brand-copy { min-width: 0; }
+  .brand-title {
+    margin: 0; font-size: clamp(.98rem, 1.8vw, 1.18rem); font-weight: 760;
+    line-height: 1.3; letter-spacing: -.025em; overflow-wrap: anywhere;
+  }
+  .brand-subtitle { color: var(--muted); font-size: .76rem; margin-top: 3px; }
+  .header-actions { display: flex; align-items: center; gap: 9px; flex: 0 0 auto; }
+  .icon-btn, .language-btn {
+    min-height: 42px;
+    border: 1px solid var(--border);
+    background: var(--button-bg);
+    color: var(--button-text);
+    border-radius: 13px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 9px 12px;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  }
+  .icon-btn { width: 44px; padding: 0; }
+  .icon-btn:hover, .language-btn:hover { background: var(--button-hover); transform: translateY(-1px); box-shadow: 0 5px 14px color-mix(in srgb, var(--accent) 12%, transparent); }
+  .icon-btn:active, .language-btn:active, .resource-btn:active { transform: translateY(0) scale(.985); }
+  .icon-btn svg { width: 20px; height: 20px; stroke: currentColor; }
+  .language-wrap { position: relative; }
+  .language-btn { font-size: .88rem; font-weight: 650; }
+  .language-btn svg { width: 16px; height: 16px; stroke: currentColor; }
+  .dropdown {
+    position: absolute; right: 0; top: calc(100% + 10px); min-width: 180px;
+    background: var(--surface-solid); color: var(--text); border: 1px solid var(--border);
+    box-shadow: var(--shadow); border-radius: 16px; padding: 6px; z-index: 150;
+    opacity: 0; visibility: hidden; transform: translateY(-6px) scale(.98);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  }
+  .dropdown.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+  .dropdown-item {
+    width: 100%; border: 0; border-radius: 10px; background: transparent; color: var(--text);
+    display: flex; justify-content: space-between; align-items: center; padding: 11px 12px; text-align: left;
+  }
+  .dropdown-item:hover { background: var(--button-hover); }
+  .dropdown-item .check { color: var(--accent); font-weight: 850; }
+  main { width: min(1160px, calc(100% - 36px)); margin: 0 auto; padding: clamp(34px, 6vw, 72px) 0 68px; }
+  .hero { text-align: center; max-width: 760px; margin: 0 auto 34px; animation: rise .65s ease both; }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px;
+    color: var(--accent-strong); background: var(--accent-soft); border: 1px solid var(--border);
+    border-radius: 999px; font-size: .78rem; font-weight: 750; letter-spacing: .07em; text-transform: uppercase;
+  }
+  .eyebrow-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 0 4px color-mix(in srgb, var(--green) 14%, transparent); }
+  .hero h2 { margin: 18px 0 10px; font-size: clamp(1.8rem, 5vw, 3.3rem); letter-spacing: -.055em; line-height: 1.1; }
+  .hero p { color: var(--muted); line-height: 1.7; font-size: clamp(.95rem, 1.8vw, 1.08rem); margin: 0 auto; max-width: 620px; }
+  .section-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin: 0 2px 16px; }
+  .section-head h3 { margin: 0; font-size: 1.08rem; letter-spacing: -.02em; }
+  .section-head p { margin: 5px 0 0; color: var(--muted); font-size: .86rem; }
+  .resource-count { color: var(--muted); font-size: .83rem; white-space: nowrap; }
+  .resource-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+  .resource-btn {
+    min-height: 88px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 20px 20px; text-align: left; text-decoration: none; color: var(--button-text);
+    background: var(--button-bg); border: 1px solid var(--border); border-radius: 18px;
+    box-shadow: 0 5px 16px color-mix(in srgb, var(--text) 4%, transparent);
+    font-weight: 720; font-size: .94rem; line-height: 1.45;
+    transition: transform .24s cubic-bezier(.2,.75,.25,1), background .25s ease, border-color .25s ease,
+      box-shadow .25s ease, color .25s ease;
+    animation: rise .5s ease both;
+  }
+  .resource-btn:hover { transform: translateY(-4px); background: var(--button-hover); border-color: color-mix(in srgb, var(--accent) 48%, var(--border)); box-shadow: var(--shadow); }
+  .resource-btn .arrow {
+    flex: 0 0 31px; width: 31px; height: 31px; display: grid; place-items: center;
+    border-radius: 10px; background: var(--accent-soft); color: var(--accent-strong); transition: transform .22s ease, background .22s ease;
+  }
+  .resource-btn:hover .arrow { transform: translate(2px,-2px); background: color-mix(in srgb, var(--accent-soft) 65%, var(--accent)); color: var(--text); }
+  .resource-btn .arrow svg { width: 16px; height: 16px; stroke: currentColor; }
+  .resource-btn.special {
+    border: 2px solid var(--accent);
+    background: linear-gradient(135deg, var(--accent-soft), var(--button-bg) 72%);
+    box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 17%, transparent);
+    position: relative;
+  }
+  .resource-btn.special::before { content: ""; position: absolute; left: 0; top: 16px; bottom: 16px; width: 4px; border-radius: 0 4px 4px 0; background: var(--accent); }
+  .resource-btn.special:hover { border-color: var(--accent-strong); box-shadow: 0 16px 34px color-mix(in srgb, var(--accent) 22%, transparent); }
+  .note-card {
+    margin-top: 28px; padding: 18px 20px; border: 1px solid var(--border); border-radius: 18px;
+    background: var(--surface); color: var(--muted); font-size: .88rem; line-height: 1.65;
+  }
+  .note-card strong { color: var(--text); }
+  footer { text-align: center; padding: 0 20px 30px; color: var(--muted); font-size: .8rem; }
+  .modal-backdrop {
+    position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 18px;
+    background: rgba(5,12,22,.48); backdrop-filter: blur(6px);
+    opacity: 0; visibility: hidden; transition: opacity .2s ease, visibility .2s ease;
+  }
+  .modal-backdrop.open { opacity: 1; visibility: visible; }
+  .settings-modal {
+    width: min(560px, 100%); max-height: min(85vh, 800px); overflow: auto;
+    color: var(--text); background: var(--surface-solid); border: 1px solid var(--border);
+    border-radius: 24px; box-shadow: 0 24px 80px rgba(0,0,0,.25);
+    transform: translateY(12px) scale(.985); transition: transform .22s ease;
+  }
+  .modal-backdrop.open .settings-modal { transform: translateY(0) scale(1); }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px 24px 16px; border-bottom: 1px solid var(--border); }
+  .modal-head h2 { font-size: 1.22rem; margin: 0; letter-spacing: -.03em; }
+  .modal-head p { color: var(--muted); margin: 5px 0 0; font-size: .85rem; }
+  .settings-body { padding: 22px 24px 24px; }
+  .setting-group { margin-bottom: 23px; }
+  .setting-group:last-child { margin-bottom: 0; }
+  .setting-label { display: block; font-size: .9rem; font-weight: 750; margin-bottom: 9px; }
+  .setting-help { font-size: .8rem; line-height: 1.5; color: var(--muted); margin: 7px 0 0; }
+  .text-input, .select-input {
+    width: 100%; min-height: 46px; border: 1px solid var(--border); border-radius: 12px;
+    background: var(--button-bg); color: var(--text); padding: 11px 13px; outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .text-input:focus, .select-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+  .appearance-grid { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 8px; }
+  .appearance-option {
+    border: 1px solid var(--border); border-radius: 12px; padding: 10px 5px; background: var(--button-bg); color: var(--text);
+    font-size: .79rem; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 7px;
+  }
+  .appearance-option[aria-pressed="true"] { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  .swatch { width: 25px; height: 25px; border-radius: 50%; border: 2px solid rgba(0,0,0,.08); box-shadow: inset 0 0 0 3px rgba(255,255,255,.35); }
+  .swatch.blue { background: linear-gradient(135deg,#1769aa,#19a76b); }
+  .swatch.red { background: linear-gradient(135deg,#c43b4d,#ffb5b9); }
+  .swatch.green { background: linear-gradient(135deg,#258653,#a6e2b9); }
+  .swatch.yellow { background: linear-gradient(135deg,#b78312,#ffe48a); }
+  .swatch.purple { background: linear-gradient(135deg,#7650b5,#d9c5ff); }
+  .disabled-group { opacity: .45; }
+  .disabled-group .appearance-option { cursor: not-allowed; }
+  .modal-foot { display: flex; justify-content: flex-end; padding: 0 24px 24px; }
+  .close-btn { min-height: 42px; padding: 10px 17px; border: 0; border-radius: 12px; color: white; background: var(--accent); font-weight: 750; transition: transform .2s ease, filter .2s ease; }
+  .close-btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
+  .toast {
+    position: fixed; z-index: 300; left: 50%; bottom: 24px; transform: translate(-50%, 12px);
+    background: var(--surface-solid); color: var(--text); border: 1px solid var(--border); border-radius: 12px;
+    padding: 11px 16px; box-shadow: var(--shadow); opacity: 0; visibility: hidden; transition: all .22s ease;
+    max-width: calc(100% - 30px); text-align: center; font-size: .86rem;
+  }
+  .toast.show { opacity: 1; visibility: visible; transform: translate(-50%,0); }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 900px) {
+    .resource-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .brand-subtitle { display: none; }
+    .topbar { gap: 12px; }
+  }
+  @media (max-width: 600px) {
+    .top-shell.scrolled { padding: 7px 8px 0; }
+    .topbar { min-height: 68px; padding: 12px 13px; gap: 8px; }
+    .scrolled .topbar { min-height: 60px; padding: 9px 11px; border-radius: 18px; }
+    .brand { gap: 9px; }
+    .brand-mark { width: 35px; height: 35px; flex-basis: 35px; border-radius: 11px; font-size: .9rem; }
+    .brand-title { font-size: .9rem; line-height: 1.25; }
+    .header-actions { gap: 6px; }
+    .icon-btn { width: 38px; min-height: 38px; border-radius: 11px; }
+    .language-btn { min-height: 38px; padding: 8px 9px; border-radius: 11px; font-size: .8rem; gap: 5px; }
+    .language-btn svg { display: none; }
+    main { width: min(100% - 24px, 1160px); padding-top: 34px; }
+    .resource-grid { grid-template-columns: 1fr; gap: 10px; }
+    .resource-btn { min-height: 70px; padding: 16px; border-radius: 15px; font-size: .91rem; }
+    .hero { margin-bottom: 29px; }
+    .section-head { align-items: start; }
+    .resource-count { font-size: .75rem; }
+    .settings-body { padding: 19px; }
+    .modal-head { padding: 19px; }
+    .modal-foot { padding: 0 19px 19px; }
+    .appearance-grid { gap: 5px; }
+    .appearance-option { font-size: .7rem; padding: 9px 2px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body data-appearance="blue" data-mode="light">
+<header class="top-shell" id="topShell">
+  <div class="topbar">
+    <a class="brand" href="#" aria-label="Home">
+      <div class="brand-mark" aria-hidden="true">BS</div>
+      <div class="brand-copy">
+        <h1 class="brand-title" id="brandTitle">Front Office - Hotel Buddi Samudra</h1>
+        <div class="brand-subtitle" data-i18n="headerSubtitle">Front Office Resource Center</div>
+      </div>
+    </a>
+    <div class="header-actions">
+      <div class="language-wrap">
+        <button class="language-btn" id="languageToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Choose language">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"></circle><path d="M2.8 12h18.4M12 2.8c2.4 2.5 3.5 5.6 3.5 9.2s-1.1 6.7-3.5 9.2c-2.4-2.5-3.5-5.6-3.5-9.2S9.6 5.3 12 2.8Z"></path></svg>
+          <span id="languageLabel">English</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
+        </button>
+        <div class="dropdown" id="languageDropdown" role="menu">
+          <button class="dropdown-item" type="button" data-language="si" role="menuitem"><span>සිංහල</span><span class="check"></span></button>
+          <button class="dropdown-item" type="button" data-language="en" role="menuitem"><span>English</span><span class="check">✓</span></button>
+          <button class="dropdown-item" type="button" data-language="ta" role="menuitem"><span>தமிழ்</span><span class="check"></span></button>
+        </div>
+      </div>
+      <button class="icon-btn" id="themeToggle" type="button" aria-label="Switch to dark mode" title="Switch theme">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
+      </button>
+      <button class="icon-btn" id="settingsToggle" type="button" aria-label="Settings" title="Settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="m19.4 15 .1.1a1.7 1.7 0 0 1-2.4 2.4l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a1.7 1.7 0 0 1-3.4 0v-.2a1.7 1.7 0 0 0-2.9-1.2l-.1.1a1.7 1.7 0 0 1-2.4-2.4l.1-.1a1.7 1.7 0 0 0-1.2-2.9H4a1.7 1.7 0 0 1 0-3.4h.2a1.7 1.7 0 0 0 1.2-2.9l-.1-.1a1.7 1.7 0 0 1 2.4-2.4l.1.1a1.7 1.7 0 0 0 2.9-1.2V2a1.7 1.7 0 0 1 3.4 0v.2a1.7 1.7 0 0 0 2.9 1.2l.1-.1a1.7 1.7 0 0 1 2.4 2.4l-.1.1a1.7 1.7 0 0 0 1.2 2.9h.2a1.7 1.7 0 0 1 0 3.4h-.2a1.7 1.7 0 0 0-1.2 2.9Z"></path></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow"><span class="eyebrow-dot"></span><span data-i18n="eyebrow">Hotel Buddi Samudra</span></div>
+    <h2 data-i18n="heroTitle">Your Front Office, All in One Place</h2>
+    <p data-i18n="heroText">Quick access to menus, quotations, forms and important front office documents.</p>
+  </section>
+
+  <section aria-labelledby="resourcesHeading">
+    <div class="section-head">
+      <div>
+        <h3 id="resourcesHeading" data-i18n="resourcesTitle">Quick Links</h3>
+        <p data-i18n="resourcesDescription">Choose a resource to open its Google Drive folder.</p>
+      </div>
+      <div class="resource-count" id="resourceCount">13 resources</div>
+    </div>
+    <div class="resource-grid" id="resourceGrid"></div>
+  </section>
+
+  <div class="note-card">
+    <strong data-i18n="noteTitle">Note:</strong>
+    <span data-i18n="noteText">These links open Google Drive folders in a new tab. Access depends on the sharing permissions of each folder.</span>
+  </div>
+</main>
+<footer><span data-i18n="footerText">Front Office Resource Center</span> · <span>Hotel Buddi Samudra</span></footer>
+
+<div class="modal-backdrop" id="settingsBackdrop" role="presentation">
+  <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsHeading">
+    <div class="modal-head">
+      <div>
+        <h2 id="settingsHeading" data-i18n="settingsTitle">Settings</h2>
+        <p data-i18n="settingsDescription">Personalize this page for your browser.</p>
+      </div>
+      <button class="icon-btn" id="settingsX" type="button" aria-label="Close settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+    <div class="settings-body">
+      <div class="setting-group">
+        <label class="setting-label" for="titleInput" data-i18n="titleLabel">Title Text</label>
+        <input class="text-input" id="titleInput" type="text" maxlength="120" autocomplete="off" placeholder="Enter title text">
+        <p class="setting-help" data-i18n="titleHelp">Your title is displayed exactly as entered and is not translated when you change the language.</p>
+      </div>
+      <div class="setting-group" id="appearanceGroup">
+        <span class="setting-label" data-i18n="appearanceLabel">Appearance Selector</span>
+        <div class="appearance-grid" id="appearanceGrid">
+          <button class="appearance-option" type="button" data-appearance-choice="blue" aria-pressed="true"><span class="swatch blue"></span><span data-i18n="blue">Blue</span></button>
+          <button class="appearance-option" type="button" data-appearance-choice="red" aria-pressed="false"><span class="swatch red"></span><span data-i18n="red">Red</span></button>
+          <button class="appearance-option" type="button" data-appearance-choice="green" aria-pressed="false"><span class="swatch green"></span><span data-i18n="green">Green</span></button>
+          <button class="appearance-option" type="button" data-appearance-choice="yellow" aria-pressed="false"><span class="swatch yellow"></span><span data-i18n="yellow">Yellow</span></button>
+          <button class="appearance-option" type="button" data-appearance-choice="purple" aria-pressed="false"><span class="swatch purple"></span><span data-i18n="purple">Purple</span></button>
+        </div>
+        <p class="setting-help" id="appearanceHelp" data-i18n="appearanceHelp">Appearance choices are available in Light Mode. Your choice is remembered while Dark Mode is active.</p>
+      </div>
+      <div class="setting-group">
+        <span class="setting-label" data-i18n="themeLabel">Display Mode</span>
+        <p class="setting-help" data-i18n="themeHelp">Use the sun/moon button in the header to switch between Light and Dark Mode.</p>
+      </div>
+      <div class="setting-group">
+        <span class="setting-label" data-i18n="storageLabel">Saved on this device</span>
+        <p class="setting-help" data-i18n="storageHelp">Title, language, appearance and display mode are saved in this browser only. They will not automatically sync to another device.</p>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="close-btn" id="settingsDone" type="button" data-i18n="done">Done</button></div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/*
+  ============================================================
+  BUTTON LIST — EDIT THIS SECTION TO ADD / CHANGE / REMOVE LINKS
+  ============================================================
+  To add a button, copy one item and change its name and url.
+  Keep commas between items. The "special" property is true only
+  for EDITERBLE DOCS to give it a distinctive border/accent style.
+  ============================================================
+*/
+const RESOURCE_BUTTONS = [
+  { name: "WEDDING MENUS", url: "https://drive.google.com/drive/folders/1LI9U4CMkjaU5X-7MFAX2zjjfbjxs-iC0?usp=sharing" },
+  { name: "WEDDING A B C MENUS", url: "https://drive.google.com/drive/folders/1j1fPCFJdRi51ZcEbReszsZlP8w4feYxo?usp=sharing" },
+  { name: "WEDDING BITE MENU", url: "https://drive.google.com/drive/folders/14IHtU-75utrkHuG28JqIHf4YgzLsqhoL?usp=sharing" },
+  { name: "GET TOGETHER MENUS", url: "https://drive.google.com/drive/folders/13sA9OUdAI93KDGCP_OfMdEkkNiL9cxB1?usp=sharing" },
+  { name: "BIRTHDAY MENUS", url: "https://drive.google.com/drive/folders/1qZsSfQX7zrXyzMXMTC3H4JfmA9Em95aa?usp=sharing" },
+  { name: "CONFERENCE BITE MENU", url: "https://drive.google.com/drive/folders/1ybkxgFKxpJ7yATQgxpTMCE47o-RJCLww?usp=sharing" },
+  { name: "HASITH'S QUOTATIONS", url: "https://drive.google.com/drive/folders/1IUozri-wXUZtZ0_SG1w_qbyPGtH-5rvD?usp=sharing" },
+  { name: "EDITERBLE DOCS", url: "https://drive.google.com/drive/folders/18fZI9ABJ3w3Ve3YTUp64Oi_Wos5jMzxz?usp=sharing", special: true },
+  { name: "AUDITOR DOCS", url: "https://drive.google.com/drive/folders/1I1Sq-G8HuCuDwV1urU0_fRsZTGeN9wlL?usp=sharing" },
+  { name: "GATE PASS PAPERS", url: "https://drive.google.com/drive/folders/1s8SO7OF47tmjV9r6ur140OWJoA10eyPY?usp=sharing" },
+  { name: "STAFF SALARY ADVANCE REQUEST FORM", url: "https://drive.google.com/drive/folders/1tp-GfyHZtbqQ4UZoa5YEwvkR1Z6u6Q7o?usp=sharing" },
+  { name: "WEDDING COUPLE SALOON FORM", url: "https://drive.google.com/drive/folders/1CdZZeJZWgnd3r8e51A2hGhUVNEtWFrXo?usp=sharing" },
+  { name: "NEW COMMER CV FORM", url: "https://drive.google.com/drive/folders/1yBHaokY5tqVg_WYCc7ypcPQGcFV7DK-J?usp=sharing" }
+];
+
+/* Translation strings for the page interface. Resource button names and user-entered title are intentionally not translated. */
+const TRANSLATIONS = {
+  en: {
+    headerSubtitle:"Front Office Resource Center", eyebrow:"Hotel Buddi Samudra",
+    heroTitle:"Your Front Office, All in One Place",
+    heroText:"Quick access to menus, quotations, forms and important front office documents.",
+    resourcesTitle:"Quick Links", resourcesDescription:"Choose a resource to open its Google Drive folder.",
+    noteTitle:"Note:", noteText:"These links open Google Drive folders in a new tab. Access depends on the sharing permissions of each folder.",
+    footerText:"Front Office Resource Center", settingsTitle:"Settings",
+    settingsDescription:"Personalize this page for your browser.", titleLabel:"Title Text",
+    titleHelp:"Your title is displayed exactly as entered and is not translated when you change the language.",
+    appearanceLabel:"Appearance Selector", blue:"Blue", red:"Red", green:"Green", yellow:"Yellow", purple:"Purple",
+    appearanceHelp:"Appearance choices are available in Light Mode. Your choice is remembered while Dark Mode is active.",
+    themeLabel:"Display Mode", themeHelp:"Use the sun/moon button in the header to switch between Light and Dark Mode.",
+    storageLabel:"Saved on this device", storageHelp:"Title, language, appearance and display mode are saved in this browser only. They will not automatically sync to another device.",
+    done:"Done", languageLabel:"English", lightMode:"Switch to dark mode", darkMode:"Switch to light mode",
+    resourcesCount:n=>`${n} resources`, toastLanguage:"Language updated", toastTitle:"Title saved"
+  },
+  si: {
+    headerSubtitle:"ප්‍රධාන පිළිගැනීමේ අංශයේ සම්පත් මධ්‍යස්ථානය", eyebrow:"හෝටල් බුද්ධි සමුද්‍රා",
+    heroTitle:"ඔබගේ Front Office අවශ්‍යතා එකම ස්ථානයක",
+    heroText:"මෙනු, මිල ගණන්, පෝරම සහ වැදගත් Front Office ලේඛන වෙත ඉක්මන් ප්‍රවේශය.",
+    resourcesTitle:"ඉක්මන් සබැඳි", resourcesDescription:"අදාළ Google Drive Folder එක විවෘත කිරීමට තෝරන්න.",
+    noteTitle:"සටහන:", noteText:"මෙම සබැඳි Google Drive Folders නව Tab එකක විවෘත කරයි. ප්‍රවේශය Folder එකේ Sharing Permissions මත රඳා පවතී.",
+    footerText:"ප්‍රධාන පිළිගැනීමේ අංශයේ සම්පත් මධ්‍යස්ථානය", settingsTitle:"සැකසුම්",
+    settingsDescription:"මෙම Browser එක සඳහා පිටුවේ පෙනුම සකස් කරන්න.", titleLabel:"Title Text",
+    titleHelp:"ඔබ ඇතුළත් කරන Title Text එක එලෙසම පෙන්වන අතර භාෂාව වෙනස් කළ විට පරිවර්තනය නොවේ.",
+    appearanceLabel:"Appearance Selector", blue:"නිල් (Blue)", red:"රතු (Red)", green:"කොළ (Green)", yellow:"කහ (Yellow)", purple:"දම් (Purple)",
+    appearanceHelp:"Appearance තේරීම් Light Mode තුළ පමණක් භාවිත කළ හැකියි. Dark Mode තුළ ඔබේ තේරීම මතකයේ පවතී.",
+    themeLabel:"තිර පෙනුම් මාදිලිය", themeHelp:"Light Mode සහ Dark Mode අතර මාරු වීමට Header එකේ හිරු/සඳ Button එක භාවිත කරන්න.",
+    storageLabel:"මෙම උපාංගයේ සුරකියි", storageHelp:"Title, භාෂාව, Appearance සහ Display Mode මෙම Browser එකේ පමණක් සුරකියි. වෙනත් උපාංගයකට ස්වයංක්‍රීයව Sync නොවේ.",
+    done:"හරි", languageLabel:"සිංහල", lightMode:"Dark Mode වෙත මාරු වන්න", darkMode:"Light Mode වෙත මාරු වන්න",
+    resourcesCount:n=>`සම්පත් ${n}ක්`, toastLanguage:"භාෂාව වෙනස් කළා", toastTitle:"Title එක සුරැකුවා"
+  },
+  ta: {
+    headerSubtitle:"முன் அலுவலக வள மையம்", eyebrow:"ஹோட்டல் புத்தி சமுத்ரா",
+    heroTitle:"உங்கள் முன் அலுவலகத் தேவைகள் அனைத்தும் ஒரே இடத்தில்",
+    heroText:"மெனுக்கள், விலைப்புள்ளிகள், படிவங்கள் மற்றும் முக்கிய முன் அலுவலக ஆவணங்களுக்கு விரைவான அணுகல்.",
+    resourcesTitle:"விரைவு இணைப்புகள்", resourcesDescription:"Google Drive கோப்புறையைத் திறக்கத் தேவையான இணைப்பைத் தேர்ந்தெடுக்கவும்.",
+    noteTitle:"குறிப்பு:", noteText:"இந்த இணைப்புகள் Google Drive கோப்புறைகளை புதிய தாவலில் திறக்கும். அணுகல் பகிர்வு அனுமதிகளைப் பொறுத்தது.",
+    footerText:"முன் அலுவலக வள மையம்", settingsTitle:"அமைப்புகள்",
+    settingsDescription:"இந்த உலாவிக்கான பக்கத்தை தனிப்பயனாக்கவும்.", titleLabel:"Title Text",
+    titleHelp:"நீங்கள் உள்ளிட்ட தலைப்பு அப்படியே காட்டப்படும்; மொழியை மாற்றும்போது அது மொழிபெயர்க்கப்படாது.",
+    appearanceLabel:"Appearance Selector", blue:"நீலம் (Blue)", red:"சிவப்பு (Red)", green:"பச்சை (Green)", yellow:"மஞ்சள் (Yellow)", purple:"ஊதா (Purple)",
+    appearanceHelp:"Light Mode-இல் மட்டும் Appearance-ஐத் தேர்ந்தெடுக்கலாம். Dark Mode-இல் உங்கள் தேர்வு நினைவில் வைக்கப்படும்.",
+    themeLabel:"காட்சி முறை", themeHelp:"Light Mode மற்றும் Dark Mode இடையே மாற Header-இல் உள்ள சூரியன்/நிலா பொத்தானைப் பயன்படுத்தவும்.",
+    storageLabel:"இந்தச் சாதனத்தில் சேமிக்கப்படும்", storageHelp:"தலைப்பு, மொழி, Appearance மற்றும் காட்சி முறை இந்த உலாவியில் மட்டுமே சேமிக்கப்படும். வேறு சாதனத்துடன் தானாக ஒத்திசைக்கப்படாது.",
+    done:"முடிந்தது", languageLabel:"தமிழ்", lightMode:"Dark Mode-க்கு மாறவும்", darkMode:"Light Mode-க்கு மாறவும்",
+    resourcesCount:n=>`${n} வளங்கள்`, toastLanguage:"மொழி மாற்றப்பட்டது", toastTitle:"தலைப்பு சேமிக்கப்பட்டது"
+  }
+};
+
+const DEFAULT_TITLE = "Front Office - Hotel Buddi Samudra";
+const STORAGE_KEYS = {
+  title: "hasithFrontOffice.title",
+  language: "hasithFrontOffice.language",
+  appearance: "hasithFrontOffice.appearance",
+  mode: "hasithFrontOffice.mode"
+};
+
+const body = document.body;
+const topShell = document.getElementById("topShell");
+const brandTitle = document.getElementById("brandTitle");
+const titleInput = document.getElementById("titleInput");
+const languageToggle = document.getElementById("languageToggle");
+const languageDropdown = document.getElementById("languageDropdown");
+const languageLabel = document.getElementById("languageLabel");
+const themeToggle = document.getElementById("themeToggle");
+const themeIcon = document.getElementById("themeIcon");
+const settingsToggle = document.getElementById("settingsToggle");
+const settingsBackdrop = document.getElementById("settingsBackdrop");
+const appearanceGroup = document.getElementById("appearanceGroup");
+const appearanceGrid = document.getElementById("appearanceGrid");
+const resourceGrid = document.getElementById("resourceGrid");
+const resourceCount = document.getElementById("resourceCount");
+const toast = document.getElementById("toast");
+
+let currentLanguage = safeGet(STORAGE_KEYS.language, "en");
+let currentAppearance = safeGet(STORAGE_KEYS.appearance, "blue");
+let currentMode = safeGet(STORAGE_KEYS.mode, "light");
+let toastTimer;
+
+function safeGet(key, fallback) {
+  try { const value = localStorage.getItem(key); return value === null ? fallback : value; }
+  catch (e) { return fallback; }
+}
+function safeSet(key, value) {
+  try { localStorage.setItem(key, value); }
+  catch (e) { /* Storage may be disabled by browser settings. The page still works for this session. */ }
+}
+function t(key) {
+  const pack = TRANSLATIONS[currentLanguage] || TRANSLATIONS.en;
+  return pack[key] !== undefined ? pack[key] : (TRANSLATIONS.en[key] ?? key);
+}
+function setTitle(value, persist = true) {
+  const clean = value.trim() || DEFAULT_TITLE;
+  brandTitle.textContent = clean;
+  titleInput.value = value;
+  document.title = clean;
+  if (persist) safeSet(STORAGE_KEYS.title, clean);
+}
+function renderResources() {
+  resourceGrid.innerHTML = "";
+  RESOURCE_BUTTONS.forEach((item, index) => {
+    const link = document.createElement("a");
+    link.className = "resource-btn" + (item.special ? " special" : "");
+    link.href = item.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.style.animationDelay = `${Math.min(index * 35, 350)}ms`;
+    link.setAttribute("aria-label", `${item.name} — opens in a new tab`);
+    const label = document.createElement("span");
+    label.textContent = item.name;
+    const arrow = document.createElement("span");
+    arrow.className = "arrow";
+    arrow.setAttribute("aria-hidden", "true");
+    arrow.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M7 7h10v10"/></svg>';
+    link.append(label, arrow);
+    resourceGrid.appendChild(link);
+  });
+  resourceCount.textContent = t("resourcesCount")(RESOURCE_BUTTONS.length);
+}
+function applyLanguage() {
+  document.documentElement.lang = currentLanguage === "si" ? "si" : currentLanguage === "ta" ? "ta" : "en";
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (t(key) !== undefined) el.textContent = t(key);
+  });
+  languageLabel.textContent = t("languageLabel");
+  document.querySelectorAll("[data-language]").forEach(btn => {
+    btn.querySelector(".check").textContent = btn.dataset.language === currentLanguage ? "✓" : "";
+    btn.setAttribute("aria-current", btn.dataset.language === currentLanguage ? "true" : "false");
+  });
+  themeToggle.setAttribute("aria-label", currentMode === "dark" ? t("darkMode") : t("lightMode"));
+  themeToggle.title = currentMode === "dark" ? t("darkMode") : t("lightMode");
+  renderResources();
+}
+function applyAppearance() {
+  if (!["blue","red","green","yellow","purple"].includes(currentAppearance)) currentAppearance = "blue";
+  if (!["light","dark"].includes(currentMode)) currentMode = "light";
+  body.dataset.appearance = currentAppearance;
+  body.dataset.mode = currentMode;
+  const isDark = currentMode === "dark";
+  themeIcon.innerHTML = isDark
+    ? '<path d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.7 8.7 0 1 0 20.2 15.4Z"></path>'
+    : '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path>';
+  appearanceGroup.classList.toggle("disabled-group", isDark);
+  appearanceGrid.querySelectorAll("[data-appearance-choice]").forEach(btn => {
+    btn.disabled = isDark;
+    btn.setAttribute("aria-pressed", btn.dataset.appearanceChoice === currentAppearance ? "true" : "false");
+  });
+  safeSet(STORAGE_KEYS.appearance, currentAppearance);
+  safeSet(STORAGE_KEYS.mode, currentMode);
+  applyLanguage();
+}
+function showToast(message) {
+  toast.textContent = message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+}
+function openSettings() {
+  titleInput.value = brandTitle.textContent;
+  settingsBackdrop.classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(() => titleInput.focus(), 80);
+}
+function closeSettings() {
+  settingsBackdrop.classList.remove("open");
+  document.body.style.overflow = "";
+  settingsToggle.focus();
+}
+function toggleLanguageDropdown(force) {
+  const shouldOpen = force === undefined ? !languageDropdown.classList.contains("open") : force;
+  languageDropdown.classList.toggle("open", shouldOpen);
+  languageToggle.setAttribute("aria-expanded", String(shouldOpen));
+}
+
+languageToggle.addEventListener("click", e => { e.stopPropagation(); toggleLanguageDropdown(); });
+languageDropdown.addEventListener("click", e => {
+  const btn = e.target.closest("[data-language]");
+  if (!btn) return;
+  currentLanguage = btn.dataset.language;
+  safeSet(STORAGE_KEYS.language, currentLanguage);
+  applyLanguage();
+  toggleLanguageDropdown(false);
+  showToast(t("toastLanguage"));
+});
+document.addEventListener("click", e => {
+  if (!e.target.closest(".language-wrap")) toggleLanguageDropdown(false);
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    toggleLanguageDropdown(false);
+    if (settingsBackdrop.classList.contains("open")) closeSettings();
+  }
+});
+themeToggle.addEventListener("click", () => {
+  currentMode = currentMode === "dark" ? "light" : "dark";
+  applyAppearance();
+});
+settingsToggle.addEventListener("click", openSettings);
+document.getElementById("settingsX").addEventListener("click", closeSettings);
+document.getElementById("settingsDone").addEventListener("click", closeSettings);
+settingsBackdrop.addEventListener("click", e => { if (e.target === settingsBackdrop) closeSettings(); });
+titleInput.addEventListener("input", () => {
+  const value = titleInput.value;
+  brandTitle.textContent = value.trim() || DEFAULT_TITLE;
+  document.title = value.trim() || DEFAULT_TITLE;
+  safeSet(STORAGE_KEYS.title, value.trim() || DEFAULT_TITLE);
+});
+titleInput.addEventListener("change", () => showToast(t("toastTitle")));
+appearanceGrid.addEventListener("click", e => {
+  const btn = e.target.closest("[data-appearance-choice]");
+  if (!btn || currentMode === "dark" || btn.disabled) return;
+  currentAppearance = btn.dataset.appearanceChoice;
+  applyAppearance();
+});
+
+/* Google Store-inspired sticky header: full-width at top; floating rounded bar after scrolling. */
+let scrollTicking = false;
+function updateHeaderOnScroll() {
+  if (!scrollTicking) {
+    window.requestAnimationFrame(() => {
+      topShell.classList.toggle("scrolled", window.scrollY > 24);
+      scrollTicking = false;
+    });
+    scrollTicking = true;
+  }
+}
+window.addEventListener("scroll", updateHeaderOnScroll, { passive: true });
+
+/* Initial state */
+const storedTitle = safeGet(STORAGE_KEYS.title, DEFAULT_TITLE);
+setTitle(storedTitle, false);
+titleInput.value = storedTitle;
+if (!["en","si","ta"].includes(currentLanguage)) currentLanguage = "en";
+if (!["blue","red","green","yellow","purple"].includes(currentAppearance)) currentAppearance = "blue";
+if (!["light","dark"].includes(currentMode)) currentMode = "light";
+applyAppearance();
+updateHeaderOnScroll();
+</script>
+</body>
+</html>
